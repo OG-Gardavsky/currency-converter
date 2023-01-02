@@ -41,6 +41,8 @@ function App() {
     const [currencyRecords, setCurrencyRecords] = useState([])
     const [error, setError] = useState('')
     const [selectedCurrency, setSelectedCurrency] = useState('')
+    const [ammount, setAmmount] = useState(0)
+    const [conversionString, setConversionString] = useState('')
 
     useEffect(() => {
         const config = {
@@ -62,9 +64,20 @@ function App() {
 
     }, [])
 
+    useEffect(() => {
+        if(currencyRecords.length < 1 || !ammount) return
+
+        const foundObj = currencyRecords.find(record => record.code === selectedCurrency)
+        if(!foundObj) return
+        const num = (ammount / (foundObj.rate / foundObj.amount)).toFixed(2)
+
+        setConversionString(`${ammount} CZK is ${num} ${foundObj.code} `)
+
+    }, [selectedCurrency, ammount])
+
     function handleSubmit(e: any) {
         e.preventDefault()
-        console.log(e.target[0].value)
+        setAmmount(e.target[0].value)
     }
 
 
@@ -84,7 +97,7 @@ function App() {
                 </select>
             }
 
-            <div>{selectedCurrency}</div>
+            <h2>{conversionString}</h2>
 
 
             {

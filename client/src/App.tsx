@@ -40,6 +40,7 @@ function App() {
 
     const [currencyRecords, setCurrencyRecords] = useState([])
     const [error, setError] = useState('')
+    const [selectedCurrency, setSelectedCurrency] = useState('')
 
     useEffect(() => {
         const config = {
@@ -71,16 +72,20 @@ function App() {
         <div className="App">
             <h1>Currency converter</h1>
             <form onSubmit={handleSubmit}>
-                <input type="text" />
+                <input type="number" />
                 <button type="submit">count</button>
             </form>
 
-            {/*{*/}
-            {/*    // currencyRecords.length > 1 ??*/}
-            {/*    <select onChange={(e) => console.log(e)}>*/}
-            {/*        {currencyRecords.map(record => <option key={record.code}>{record.code}</option>)}*/}
-            {/*    </select>*/}
-            {/*}*/}
+            {
+                currencyRecords.length > 1 &&
+                <select onChange={(e) => setSelectedCurrency(e.target.value)}>
+                    {currencyRecords.map(record => <option key={record.code} value={record.code}>{record.country}</option>)}
+                    {/*<option>neco</option>*/}
+                </select>
+            }
+
+            <div>{selectedCurrency}</div>
+
 
             {
                 currencyRecords.length < 1 && !error

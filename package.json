@@ -1,0 +1,14 @@
+{
+  "name": "currency-converter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "devClient": "cd client && npm run dev",
+    "devServer": "cd server && npm run run",
+    "build": "cd client && npm i && npm run build && cd ../server && npm i",
+    "run": "cd server && npm run start"
+  },
+  "author": "",
+  "license": "ISC"
+}

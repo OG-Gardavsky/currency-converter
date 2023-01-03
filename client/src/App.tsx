@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import './App.css'
 import axios from "axios";
 import {CurrencyRecord} from "./types/currencyRecord";
@@ -45,6 +45,7 @@ function App() {
     const [error, setError] = useState('')
     const [selectedCurrency, setSelectedCurrency] = useState('')
     const [conversionString, setConversionString] = useState('')
+    const amountRef = useRef(0)
 
     useEffect(() => {
         axios.get(URL)
@@ -71,6 +72,7 @@ function App() {
         const num = (ammount / (foundObj.rate / foundObj.amount)).toFixed(2)
 
         setConversionString(`${ammount} CZK = ${num} ${foundObj.code} (${foundObj.country})`)
+        amountRef.current.value = ''
     }
 
 
@@ -78,7 +80,7 @@ function App() {
         <div className="App">
             <h1>Currency converter</h1>
             <form onSubmit={handleSubmit}>
-                <input type="number" />
+                <input ref={amountRef} type="number" />
                 <button type="submit">count</button>
             </form>
 

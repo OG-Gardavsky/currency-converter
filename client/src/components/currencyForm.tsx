@@ -11,11 +11,10 @@ export function CurrencyForm({handleSubmit, currencyRecords}: selectCurrencyProp
         <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                 <InputGroup className="mb-3">
-                    <InputGroup.Text  id="basic-addon1">$</InputGroup.Text>
+                    <InputGroup.Text  id="basic-addon1">CZK</InputGroup.Text>
                     <Form.Control
                         placeholder="Amount in CZK"
                         aria-label="amount"
-                        // onSubmit={handleSubmit}
                         type="number"
                     />
                     <Form.Select>

@@ -4,6 +4,8 @@ import axios from "axios";
 import {CurrencyRecord} from "./types/currencyRecord";
 import {CurrencyList} from "./components/currencyList";
 import {CurrencyForm} from "./components/currencyForm";
+import {Alert} from "react-bootstrap";
+import {CustomSpinner} from "./components/customSpinner";
 
 const parseData = (data: any): CurrencyRecord[] => {
     const lines = data.split(/\r\n|\r|\n/g);
@@ -34,16 +36,12 @@ const parseData = (data: any): CurrencyRecord[] => {
     return currencyRecords
 }
 
-
-
-
 function App() {
     const URL = 'http://localhost:3000/records'
 
 
     const [currencyRecords, setCurrencyRecords] = useState<CurrencyRecord[]>([])
     const [error, setError] = useState('')
-    // const [selectedCurrency, setSelectedCurrency] = useState('')
     const [conversionString, setConversionString] = useState('')
 
     useEffect(() => {
@@ -51,7 +49,6 @@ function App() {
             .then((result) => {
                 const records = parseData(result.data)
                 setCurrencyRecords(records)
-                console.log(records);
             })
             .catch((err) => {
                 console.log(err)
@@ -83,12 +80,12 @@ function App() {
 
             <h2>{conversionString}</h2>
 
-            { currencyRecords.length < 1 && !error
-                ? 'loading...'
-                : <CurrencyList  currencyRecords={currencyRecords}/>
-            }
+            { error && <Alert variant="danger">{error}</Alert> }
 
-            {error && <h2>{ error }</h2>}
+            { currencyRecords.length < 1 && !error && <CustomSpinner/> }
+
+            { currencyRecords.length > 1 && <CurrencyList  currencyRecords={currencyRecords}/> }
+
         </div>
     )
 }

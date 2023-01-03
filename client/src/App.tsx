@@ -1,33 +1,34 @@
 import {useEffect, useState} from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
 import axios from "axios";
+import {CurrencyRecord} from "./types/currencyRecord";
 
-const parseData = (data: any) => {
+const parseData = (data: any): CurrencyRecord[] => {
     const lines = data.split(/\r\n|\r|\n/g);
     lines.shift()
 
     const keys = lines[0].split('|')
-    //@ts-ignore
-    const lowerCaseKeys = keys.map((key) => key.toLowerCase())
+    const lowerCaseKeys = keys.map((key: string) => key.toLowerCase())
     lines.shift()
 
-    //@ts-ignore
-    const currencyRecords = []
-    //@ts-ignore
-    lines.forEach((line) => {
+
+    const currencyRecords: Array<CurrencyRecord> = []
+    lines.forEach((line: any) => {
         const currencyData = line.split('|')
         if(currencyData.length < 2) return
 
-        const records = {}
-        //@ts-ignore
-        currencyData.forEach((record, index) => {
+        const records: CurrencyRecord = {country: '', currency: '', rate: 0, code: '', amount: 0}
+
+        currencyData.forEach((record: string | number, index: number) => {
+            if(lowerCaseKeys[index] === 'amount' || lowerCaseKeys[index] === 'rate') {
+                record = Number(record)
+            }
             //@ts-ignore
             records[lowerCaseKeys[index]] = record
         })
         currencyRecords.push(records)
     })
-    //@ts-ignore
+
     return currencyRecords
 }
 
@@ -38,7 +39,7 @@ function App() {
     const URL = 'http://localhost:3000/records'
 
 
-    const [currencyRecords, setCurrencyRecords] = useState([])
+    const [currencyRecords, setCurrencyRecords] = useState<CurrencyRecord[]>([])
     const [error, setError] = useState('')
     const [selectedCurrency, setSelectedCurrency] = useState('')
     const [conversionString, setConversionString] = useState('')
@@ -47,7 +48,6 @@ function App() {
         axios.get(URL)
             .then((result) => {
                 const records = parseData(result.data)
-                //@ts-ignore
                 setCurrencyRecords(records)
                 console.log(records);
             })
@@ -64,12 +64,9 @@ function App() {
         const ammount = e.target[0].value
         if(currencyRecords.length < 1 || !ammount) return
 
-
         const foundObj = currencyRecords.find(record => record.code === selectedCurrency)
         if(!foundObj) return
         const num = (ammount / (foundObj.rate / foundObj.amount)).toFixed(2)
-
-
 
         setConversionString(`${ammount} CZK = ${num} ${foundObj.code} (${foundObj.country})`)
     }
@@ -101,7 +98,6 @@ function App() {
                 currencyRecords.length < 1 && !error
                 ? 'loading...'
                 : currencyRecords.map((record) => {
-                        // @ts-ignore
                         return <li key={record.code}>{ createCurrencyString(record) }</li>
                     })
             }

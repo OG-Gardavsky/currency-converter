@@ -4,6 +4,7 @@ import axios from "axios";
 import {CurrencyRecord} from "./types/currencyRecord";
 import {CurrencyList} from "./components/currencyList";
 import {SelectCurrency} from "./components/selectCurrency";
+import {Button, Form, InputGroup} from "react-bootstrap";
 
 const parseData = (data: any): CurrencyRecord[] => {
     const lines = data.split(/\r\n|\r|\n/g);
@@ -43,9 +44,8 @@ function App() {
 
     const [currencyRecords, setCurrencyRecords] = useState<CurrencyRecord[]>([])
     const [error, setError] = useState('')
-    const [selectedCurrency, setSelectedCurrency] = useState('')
+    // const [selectedCurrency, setSelectedCurrency] = useState('')
     const [conversionString, setConversionString] = useState('')
-    const amountRef = useRef(0)
 
     useEffect(() => {
         axios.get(URL)
@@ -64,27 +64,45 @@ function App() {
     function handleSubmit(e: any) {
         e.preventDefault()
 
+        const selectedCurrency = e.target[1].value
         const ammount = e.target[0].value
-        if(currencyRecords.length < 1 || !ammount) return
+        if(currencyRecords.length < 1 || !ammount || !selectedCurrency) return
 
         const foundObj = currencyRecords.find(record => record.code === selectedCurrency)
         if(!foundObj) return
         const num = (ammount / (foundObj.rate / foundObj.amount)).toFixed(2)
 
         setConversionString(`${ammount} CZK = ${num} ${foundObj.code} (${foundObj.country})`)
-        amountRef.current.value = ''
     }
 
 
     return (
         <div className="App">
             <h1>Currency converter</h1>
-            <form onSubmit={handleSubmit}>
-                <input ref={amountRef} type="number" />
-                <button type="submit">count</button>
-            </form>
 
-            <SelectCurrency onChange={setSelectedCurrency} currencyRecords={currencyRecords} />
+            <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                    <InputGroup className="mb-3">
+                        <InputGroup.Text  id="basic-addon1">$</InputGroup.Text>
+                        <Form.Control
+                            placeholder="Amount in CZK"
+                            aria-label="amount"
+                            onSubmit={handleSubmit}
+                            type="number"
+                        />
+                        <Form.Select>
+                            <option value={undefined}>select currency</option>
+                            {currencyRecords.length > 1 &&
+                                currencyRecords.map(record => {
+                                    return <option key={record.code}
+                                                   value={record.code}>{record.code} ({record.country})</option>
+                                })
+                            }
+                        </Form.Select>
+                        <Button variant="secondary" type="submit">convert</Button>
+                    </InputGroup>
+                </Form.Group>
+            </Form>
 
             <h2>{conversionString}</h2>
 

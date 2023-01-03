@@ -76,7 +76,7 @@ function App() {
         <div className="App">
             <h1>Currency converter</h1>
 
-            <CurrencyForm handleSubmit={handleSubmit} currencyRecords={currencyRecords} />
+            <CurrencyForm handleSubmit={handleSubmit} currencyRecords={currencyRecords} disabled={!!error} />
 
             <h2>{conversionString}</h2>
 

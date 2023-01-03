@@ -4,8 +4,9 @@ import {Button, Form, InputGroup} from "react-bootstrap";
 export interface selectCurrencyProps {
     handleSubmit: Function | undefined
     currencyRecords: CurrencyRecord[]
+    disabled: boolean
 }
-export function CurrencyForm({handleSubmit, currencyRecords}: selectCurrencyProps) {
+export function CurrencyForm({handleSubmit, currencyRecords,  disabled}: selectCurrencyProps) {
 
     return(
         <Form onSubmit={handleSubmit}>
@@ -16,8 +17,9 @@ export function CurrencyForm({handleSubmit, currencyRecords}: selectCurrencyProp
                         placeholder="Amount in CZK"
                         aria-label="amount"
                         type="number"
+                        disabled={disabled}
                     />
-                    <Form.Select>
+                    <Form.Select disabled={disabled}>
                         <option value={undefined}>select currency</option>
                         {currencyRecords.length > 1 &&
                             currencyRecords.map(record => {

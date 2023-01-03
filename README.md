@@ -8,6 +8,11 @@ clone it
 git clone https://github.com/OG-Gardavsky/currency-converter.git
 ```
 
+open it
+```
+cd currency-converter
+```
+
 build it
 ```
 npm run build

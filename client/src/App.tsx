@@ -31,7 +31,7 @@ const parseData = (data: any) => {
     return currencyRecords
 }
 
-const createCurrencyString = ({amount, currency, country, rate}: any) => `${amount} ${currency}(${country}) = ${rate} CZK`
+const createCurrencyString = ({amount, code, country, rate}: any) => `${amount} ${code}(${country}) = ${rate} CZK`
 
 
 function App() {
@@ -41,16 +41,10 @@ function App() {
     const [currencyRecords, setCurrencyRecords] = useState([])
     const [error, setError] = useState('')
     const [selectedCurrency, setSelectedCurrency] = useState('')
-    const [ammount, setAmmount] = useState(0)
     const [conversionString, setConversionString] = useState('')
 
     useEffect(() => {
-        const config = {
-            // headers: {
-            //     'Referrer-Policy': 'no-referrer-when-downgrade',
-            // },
-        }
-        axios.get(URL, config)
+        axios.get(URL)
             .then((result) => {
                 const records = parseData(result.data)
                 //@ts-ignore
@@ -64,20 +58,20 @@ function App() {
 
     }, [])
 
-    useEffect(() => {
+    function handleSubmit(e: any) {
+        e.preventDefault()
+
+        const ammount = e.target[0].value
         if(currencyRecords.length < 1 || !ammount) return
+
 
         const foundObj = currencyRecords.find(record => record.code === selectedCurrency)
         if(!foundObj) return
         const num = (ammount / (foundObj.rate / foundObj.amount)).toFixed(2)
 
-        setConversionString(`${ammount} CZK is ${num} ${foundObj.code} `)
 
-    }, [selectedCurrency, ammount])
 
-    function handleSubmit(e: any) {
-        e.preventDefault()
-        setAmmount(e.target[0].value)
+        setConversionString(`${ammount} CZK = ${num} ${foundObj.code} (${foundObj.country})`)
     }
 
 
@@ -90,10 +84,13 @@ function App() {
             </form>
 
             {
-                currencyRecords.length > 1 &&
                 <select onChange={(e) => setSelectedCurrency(e.target.value)}>
-                    {currencyRecords.map(record => <option key={record.code} value={record.code}>{record.country}</option>)}
-                    {/*<option>neco</option>*/}
+                    <option value={undefined}>select currency</option>
+                    { currencyRecords.length > 1 &&
+                        currencyRecords.map(record => {
+                           return <option key={record.code} value={record.code}>{record.code} ({record.country})</option>
+                        })
+                    }
                 </select>
             }
 

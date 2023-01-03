@@ -2,7 +2,7 @@ import {CurrencyRecord} from "../types/currencyRecord";
 import {Button, Form, InputGroup} from "react-bootstrap";
 
 export interface selectCurrencyProps {
-    handleSubmit: Function | undefined
+    handleSubmit: any
     currencyRecords: CurrencyRecord[]
     disabled: boolean
 }

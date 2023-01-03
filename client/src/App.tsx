@@ -2,6 +2,8 @@ import {useEffect, useState} from 'react'
 import './App.css'
 import axios from "axios";
 import {CurrencyRecord} from "./types/currencyRecord";
+import {CurrencyList} from "./components/currencyList";
+import {SelectCurrency} from "./components/selectCurrency";
 
 const parseData = (data: any): CurrencyRecord[] => {
     const lines = data.split(/\r\n|\r|\n/g);
@@ -32,7 +34,7 @@ const parseData = (data: any): CurrencyRecord[] => {
     return currencyRecords
 }
 
-const createCurrencyString = ({amount, code, country, rate}: any) => `${amount} ${code}(${country}) = ${rate} CZK`
+
 
 
 function App() {
@@ -80,26 +82,13 @@ function App() {
                 <button type="submit">count</button>
             </form>
 
-            {
-                <select onChange={(e) => setSelectedCurrency(e.target.value)}>
-                    <option value={undefined}>select currency</option>
-                    { currencyRecords.length > 1 &&
-                        currencyRecords.map(record => {
-                           return <option key={record.code} value={record.code}>{record.code} ({record.country})</option>
-                        })
-                    }
-                </select>
-            }
+            <SelectCurrency onChange={setSelectedCurrency} currencyRecords={currencyRecords} />
 
             <h2>{conversionString}</h2>
 
-
-            {
-                currencyRecords.length < 1 && !error
+            { currencyRecords.length < 1 && !error
                 ? 'loading...'
-                : currencyRecords.map((record) => {
-                        return <li key={record.code}>{ createCurrencyString(record) }</li>
-                    })
+                : <CurrencyList  currencyRecords={currencyRecords}/>
             }
 
             {error && <h2>{ error }</h2>}

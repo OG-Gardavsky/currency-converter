@@ -3,8 +3,7 @@ import './App.css'
 import axios from "axios";
 import {CurrencyRecord} from "./types/currencyRecord";
 import {CurrencyList} from "./components/currencyList";
-import {SelectCurrency} from "./components/selectCurrency";
-import {Button, Form, InputGroup} from "react-bootstrap";
+import {CurrencyForm} from "./components/currencyForm";
 
 const parseData = (data: any): CurrencyRecord[] => {
     const lines = data.split(/\r\n|\r|\n/g);
@@ -80,29 +79,7 @@ function App() {
         <div className="App">
             <h1>Currency converter</h1>
 
-            <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <InputGroup className="mb-3">
-                        <InputGroup.Text  id="basic-addon1">$</InputGroup.Text>
-                        <Form.Control
-                            placeholder="Amount in CZK"
-                            aria-label="amount"
-                            onSubmit={handleSubmit}
-                            type="number"
-                        />
-                        <Form.Select>
-                            <option value={undefined}>select currency</option>
-                            {currencyRecords.length > 1 &&
-                                currencyRecords.map(record => {
-                                    return <option key={record.code}
-                                                   value={record.code}>{record.code} ({record.country})</option>
-                                })
-                            }
-                        </Form.Select>
-                        <Button variant="secondary" type="submit">convert</Button>
-                    </InputGroup>
-                </Form.Group>
-            </Form>
+            <CurrencyForm handleSubmit={handleSubmit} currencyRecords={currencyRecords} />
 
             <h2>{conversionString}</h2>
 
